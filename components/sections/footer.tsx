@@ -1,3 +1,5 @@
+
+import Image from 'next/image'
 import React from 'react'
 
 const footer = () => {
@@ -8,12 +10,16 @@ const footer = () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <a href="#home" className="flex items-center space-x-2">
-                    <img
-                      src="/Tccc.png"
-                      alt="TCCS" 
-                      className="h-15 transition-opacity duration-300 "
-                      
-                    />
+                    <div className="relative h-[60px] w-[60px]">
+                      <Image
+                        src="/Tccc.png"
+                        alt="TCCS"
+                        fill
+                        className="object-contain transition-opacity duration-300"
+                        sizes="60px"
+                        priority={false}
+                      />
+                    </div>
                 </a>
                 {/* <span className="text-xl font-bold">TCCS</span> */}
               </div>

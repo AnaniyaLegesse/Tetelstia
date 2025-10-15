@@ -25,7 +25,7 @@ const contactInfo: ContactInfoItem[] = [
     icon: MapPin,
     title: 'Our Office Address',
     detail: 'Addis Ababa, Ethiopia Kirkos Sub-city, Woreda 01, House No. 123',
-    link: '#', // Placeholder for a map link
+    link: 'https://maps.app.goo.gl/qt5zhrFuyyRut2bP9?g_st=atm',
   },
   {
     icon: Phone,

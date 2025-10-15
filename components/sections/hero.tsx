@@ -31,7 +31,7 @@ const Hero = () => {
       // Removed 'justify-center' from the flex container to allow content to align left
       className="relative min-h-screen flex items-center p-6" 
       style={{
-        backgroundImage: 'url("/bg2.jpg")', // Placeholder for a corporate background image
+        backgroundImage: 'url("/bg2.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -62,16 +62,19 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4"> 
           {/* Removed 'justify-center' to align buttons left */}
           {/* Primary Button */}
-          <button className="group w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center space-x-2">
+          <a href='#contact'>
+            <button className="group w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center space-x-2">
             <span>Join Our Mission Today</span>
-            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-          
+              <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </a>
           {/* Secondary Button */}
+          <a href='#contact'>
           <button className="group w-full sm:w-auto px-10 py-4 border border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-300 flex items-center justify-center space-x-2">
             <Play size={20} className="group-hover:scale-105 transition-transform" />
             <span>Watch Our Story</span>
           </button>
+          </a>
         </div>
       </div>
     </section>

@@ -1,3 +1,5 @@
+
+import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import React, { useState } from 'react'
 
@@ -28,13 +30,16 @@ const Header = ({ isScrolled } : HeaderProps) => {
           
           {/* Logo - Updated to use the img file */}
           <a href="#home" className="flex items-center space-x-2">
-            <img
-              src={LogoSrc} 
-              alt="TCCS" 
-              className={`h-15 transition-opacity duration-300 ${
-                isScrolled ? 'opacity-100' : 'opacity-90'
-              }`}
-            />
+            <div className={`relative h-[60px] w-[60px]`}>
+              <Image
+                src={LogoSrc}
+                alt="TCCS"
+                fill
+                className={`object-contain transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-90'}`}
+                sizes="60px"
+                priority={false}
+              />
+            </div>
           </a>
 
           {/* Desktop Navigation */}
@@ -52,9 +57,11 @@ const Header = ({ isScrolled } : HeaderProps) => {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center space-x-4">
+            <a href='#contact'>
             <button className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md font-medium transform hover:scale-105">
               Donate today
             </button>
+            </a>
           </div>
 
           {/* Mobile Menu Button - Icon color changes based on scroll */}

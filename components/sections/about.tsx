@@ -2,6 +2,7 @@
 
 import { ArrowRight, Users } from 'lucide-react'
 import React from 'react'
+import Image from 'next/image'
 
 const About = () => {
   return (
@@ -47,11 +48,13 @@ const About = () => {
           {/* Visual Column (img/Card) */}
           <div className="relative h-96 lg:h-full rounded-2xl overflow-hidden shadow-2xl">
             {/* Placeholder img relevant to the mission */}
-            <img 
+            <Image
               src="/bg1.jpg"
               alt="Community serving together"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              loading="lazy"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority={false}
             />
             {/* Overlay card for key info */}
             <div className="absolute bottom-4 left-4 p-4 bg-white/80 backdrop-blur-sm rounded-xl shadow-xl max-w-xs">
