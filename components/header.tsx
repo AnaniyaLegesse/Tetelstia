@@ -1,7 +1,8 @@
-
+'use client' 
+ 
 import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 
 
 // ASSUME this is how you handle your img in your project setup.

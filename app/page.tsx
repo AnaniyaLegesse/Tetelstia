@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Hero from '@/components/sections/hero';
-import About from '@/components/sections/about';
-import Vision from '@/components/sections/vision';
-import Core_values from '@/components/sections/core_values';
-import Ministries from '@/components/sections/ministries';
-import Cta from '@/components/sections/cta';
-import Footer from '@/components/sections/footer';
-import Header from '@/components/sections/header';
-import Contact from '@/components/sections/contact';
+import Hero from '@/app/sections/hero';
+import About from '@/app/sections/about';
+import Vision from '@/app/sections/vision';
+import Core_values from '@/app/sections/core_values';
+import Ministries from '@/app/sections/ministries';
+import Cta from '@/app/sections/cta';
+import Footer from '@/components/footer';
+import Header from '@/components/header';
+import Contact from '@/app/sections/contact';
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);

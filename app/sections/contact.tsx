@@ -1,7 +1,7 @@
 'use client';
 
-import { Mail, Phone, MapPin, Send } from 'lucide-react'
-import React, { useState } from 'react'
+import { Mail, Phone, MapPin } from 'lucide-react'
+import React, { useState,  FormEvent } from 'react'
 import { LucideIcon } from 'lucide-react'
 
 // --- Types ---
@@ -17,6 +17,13 @@ interface FormState {
   email: string;
   phone: string;
   message: string;
+}
+
+// Define an interface for the submission status state
+interface IStatus {
+  loading: boolean;
+  error: string | null;
+  success: boolean;
 }
 
 // --- Data ---
@@ -61,6 +68,9 @@ const ContactCard: React.FC<ContactInfoItem> = ({ icon: Icon, title, detail, lin
 
 // --- Main Component ---
 const Contact: React.FC = () => {
+  // Public env var (exposed to client at build time)
+  const accessKey = process.env.NEXT_PUBLIC_FORM_ACCESS_KEY;
+
   const [formData, setFormData] = useState<FormState>({
     name: '',
     email: '',
@@ -68,52 +78,65 @@ const Contact: React.FC = () => {
     message: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    // State for form submission status, typed with IStatus
+  const [status, setStatus] = useState<IStatus>({
+    loading: false,
+    error: null,
+    success: false,
+  });
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
+async function handleSubmit(event: FormEvent) {
+  event.preventDefault();
+  setStatus({ loading: true, error: null, success: false });
 
-    try {
-      const response = await fetch('/api/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          content: formData.message,
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', phone: '', message: '' });
-        alert("Thank you for your message! We will be in touch shortly. Your message has been saved to our records.");
-        console.log('Server response:', result);
-      } else {
-        const errorText = await response.text();
-        console.error('Server error:', errorText);
-        setSubmitStatus('error');
-        alert("Sorry, there was an error sending your message. Please try again.");
-      }
-    } catch (error) {
-      console.error('Network error:', error);
-      setSubmitStatus('error');
-      alert("Network error: Cannot connect to the server. Please make sure the API is running.");
-    } finally {
-      setIsSubmitting(false);
+  try {
+    if (!accessKey) {
+      setStatus({ loading: false, error: 'Missing form access key. Ensure NEXT_PUBLIC_FORM_ACCESS_KEY is set.', success: false });
+      return;
     }
-  };
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        message: formData.message,
+        from_name: "Tetelestai Contact Form",
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      setStatus({ loading: false, error: null, success: true });
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+      });
+    } else {
+      setStatus({ loading: false, error: result.message || 'Failed to send message', success: false });
+    }
+  } catch (error: unknown) { // Explicitly type error as unknown
+    let errorMessage = 'Network error. Please try again.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    setStatus({ loading: false, error: errorMessage, success: false });
+  }
+}
 
   return (
     <section id="contact" className="py-24 px-6 bg-white">
@@ -147,8 +170,7 @@ const Contact: React.FC = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  disabled={isSubmitting}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none disabled:opacity-50"
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none"
                 />
 
 
@@ -160,8 +182,7 @@ const Contact: React.FC = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  disabled={isSubmitting}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none disabled:opacity-50"
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none"
                 />
               </div>
 
@@ -174,8 +195,7 @@ const Contact: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  disabled={isSubmitting}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none disabled:opacity-50"
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none"
                 />
 
               </div>
@@ -188,35 +208,24 @@ const Contact: React.FC = () => {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                disabled={isSubmitting}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none resize-none disabled:opacity-50"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none resize-none"
               ></textarea>
 
               {/* Submit Button */}
+
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="group w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg flex items-center justify-center space-x-2 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                <span>
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </span>
-                {!isSubmitting && (
-                  <Send size={20} className="transform group-hover:translate-x-0.5 transition-transform" />
-                )}
+                disabled={status.loading}
+                className="group w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg flex items-center justify-center space-x-2 transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                {status.loading ? 'Sending...' : 'Send Message'}
               </button>
-
+            
               {/* Status Messages */}
-              {submitStatus === 'success' && (
-                <div className="p-3 bg-green-100 text-green-700 rounded-lg">
-                  Message sent successfully!
-                </div>
-              )}
-              {submitStatus === 'error' && (
-                <div className="p-3 bg-red-100 text-red-700 rounded-lg">
-                  Failed to send message. Please try again.
-                </div>
-              )}
+              <div className="mt-4 text-center">
+                  {status.success && <p className="text-green-600">Thank you, I will contact you soon!</p>}
+                  {status.error && <p className="text-red-600">{status.error}</p>}
+              </div>      
             </form>
           </div>
 
