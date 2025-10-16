@@ -30,8 +30,8 @@ const contactInfo: ContactInfoItem[] = [
   {
     icon: Phone,
     title: 'Call Us Directly',
-    detail: '+251941187380',
-    link: 'tel:+251941187380',
+    detail: '+251979860887',
+    link: 'tel:+251979860887',
   },
   {
     icon: Mail,
