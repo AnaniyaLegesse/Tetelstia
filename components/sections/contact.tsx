@@ -36,8 +36,8 @@ const contactInfo: ContactInfoItem[] = [
   {
     icon: Mail,
     title: 'Email Us Anytime',
-    detail: 'info@teelestai-ccs.org',
-    link: 'mailto:info@teelestai-ccs.org',
+    detail: 'tccs1930@gmail.com',
+    link: 'mailto:tccs1930@gmail.com',
   },
 ];
 
