@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tetelestai Community Centered Service (TCCS)
 
-## Getting Started
+A simple, modern website for Tetelestai Community Centered Service. The site shares our story and mission, highlights our core values and ministries, and provides ways to connect with us.
 
-First, run the development server:
+## What’s on the site
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Hero section with our mission statement
+- About: our journey and purpose
+- Vision and Core Values
+- Ministries overview
+- Contact form (powered by Web3Forms)
+- Header and footer with quick navigation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js (App Router) + TypeScript
+- Tailwind CSS for styling
+- next/image for optimized images
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Notes
 
-## Learn More
+- Background and logo images are served from the `public/` folder and optimized with `next/image`.
+- The contact form uses Web3Forms. Set `NEXT_PUBLIC_FORM_ACCESS_KEY` in your environment if you want to enable submissions.
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployed on Netlify. Static assets are optimized and the hero background is preloaded for faster first paint.
