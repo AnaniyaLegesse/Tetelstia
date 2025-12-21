@@ -49,7 +49,7 @@ const About = () => {
           <div className="relative h-96 lg:h-full rounded-2xl overflow-hidden shadow-2xl">
             {/* Placeholder img relevant to the mission */}
             <Image
-              src="/bg1.jpg"
+              src="/bg6.jpg"
               alt="Community serving together"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               fill
@@ -61,7 +61,7 @@ const About = () => {
               <div className="flex items-center space-x-3">
                 <Users size={28} className="text-blue-600 flex-shrink-0" />
                 <div>
-                  <h4 className="text-xl font-bold text-gray-900">From 5 to Over 40</h4>
+                  {/* <h4 className="text-xl font-bold text-gray-900">From 5 to Over 40</h4> */}
                   <p className="text-sm text-gray-600">God&apos;s faithfulness in growing our community since 2007EC</p>
                 </div>
               </div>

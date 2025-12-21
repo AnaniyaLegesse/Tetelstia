@@ -1,7 +1,5 @@
 'use client'
 
-'use client'
-
 import React from 'react'
 import Image from 'next/image'
 import { ChevronRight, Play } from 'lucide-react'
@@ -10,7 +8,7 @@ const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center p-6 bg-gray-900">
       <Image
-        src="/bg2.jpg"
+        src="/bg3.jpg"
         alt=""
         fill
         priority
