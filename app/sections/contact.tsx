@@ -111,6 +111,7 @@ const Contact: React.FC = () => {
       }
     } catch (error) {
       setStatus({ loading: false, error: 'Network error.', success: false });
+      console.log("Contact form submission error:", error);
     }
   }
 

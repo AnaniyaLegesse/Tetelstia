@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight} from 'lucide-react';
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -33,7 +33,7 @@ const About = () => {
             <div className="space-y-6 text-lg text-slate-500 font-light leading-relaxed">
               <p>
                 Tetelestai Community Centered Service began in 2014 EC with five youth gathered 
-                for Bible study and worship. Deeply moved by the truth of <span className="text-[#0C2B85] font-semibold italic underline decoration-[#7A1909]/30 underline-offset-4">Tetelestai</span>—"It is finished"—the movement was born.
+                for Bible study and worship. Deeply moved by the truth of <span className="text-[#0C2B85] font-semibold italic underline decoration-[#7A1909]/30 underline-offset-4">Tetelestai</span>—&quot;It is finished&quot;—the movement was born.
               </p>
               <p>
                 What started as a small gathering has grown into a vibrant movement of 

@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Book, Church, Cross, Heart, Users, ChevronRight, LucideIcon } from 'lucide-react'
+import { ArrowRight, Book, Church, Cross, Heart, Users} from 'lucide-react'
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -121,9 +121,9 @@ const CoreValues = () => {
                   </div>
 
                   <blockquote className="text-xl md:text-3xl font-serif italic text-[#0C2B85] leading-relaxed">
-                    "{coreValuesData[activeIndex].verse === '[John 1:3]' 
+                    &quot;{coreValuesData[activeIndex].verse === '[John 1:3]' 
                       ? 'Through Him all things were made; without Him nothing was made that has been made.' 
-                      : coreValuesData[activeIndex].description.split('.')[0] + '.'}"
+                      : coreValuesData[activeIndex].description.split('.')[0] + '.'}&quot;
                     <footer className="mt-4 md:mt-6 text-[10px] font-sans not-italic font-black text-slate-400 tracking-[0.2em] uppercase">
                        — {coreValuesData[activeIndex].verse}
                     </footer>

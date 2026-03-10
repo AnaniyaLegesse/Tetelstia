@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, Target, Maximize } from 'lucide-react';
+import { Eye, Target, Maximize, type LucideIcon } from 'lucide-react';
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -13,13 +13,8 @@ const Vision = () => {
     }
   };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-  };
-
   interface VMPCardProps {
-    icon: any;
+    icon: LucideIcon;
     title: string;
     description: string;
   }
