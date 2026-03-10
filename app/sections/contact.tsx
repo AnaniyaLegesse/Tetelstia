@@ -1,8 +1,9 @@
 'use client';
 
-import { Mail, Phone, MapPin } from 'lucide-react'
-import React, { useState,  FormEvent } from 'react'
+import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react'
+import React, { useState, FormEvent } from 'react'
 import { LucideIcon } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // --- Types ---
 interface ContactInfoItem {
@@ -19,7 +20,6 @@ interface FormState {
   message: string;
 }
 
-// Define an interface for the submission status state
 interface IStatus {
   loading: boolean;
   error: string | null;
@@ -30,19 +30,19 @@ interface IStatus {
 const contactInfo: ContactInfoItem[] = [
   {
     icon: MapPin,
-    title: 'Our Office Address',
+    title: 'Our Office',
     detail: 'Addis Ababa, Ethiopia Kirkos Sub-city, Woreda 01, House No. 123',
-    link: 'https://maps.app.goo.gl/qt5zhrFuyyRut2bP9?g_st=atm',
+    link: 'https://maps.google.com',
   },
   {
     icon: Phone,
-    title: 'Call Us Directly',
-    detail: '+251979860887',
+    title: 'Call Us',
+    detail: '+251 979 860 887',
     link: 'tel:+251979860887',
   },
   {
     icon: Mail,
-    title: 'Email Us Anytime',
+    title: 'Email Us',
     detail: 'tccs1930@gmail.com',
     link: 'mailto:tccs1930@gmail.com',
   },
@@ -54,187 +54,173 @@ const ContactCard: React.FC<ContactInfoItem> = ({ icon: Icon, title, detail, lin
     href={link}
     target={link?.startsWith('http') ? '_blank' : '_self'}
     rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
-    className="flex items-start space-x-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 group"
+    className="flex items-center space-x-5 p-6 bg-white rounded-2xl border border-slate-100 hover:border-[#7A1909]/20 transition-all duration-300 group shadow-sm hover:shadow-md"
   >
-    <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center transition-colors duration-300 group-hover:bg-blue-700">
-      <Icon size={24} className="text-white" />
+    <div className="flex-shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-[#0C2B85] group-hover:text-white text-[#0C2B85]">
+      <Icon size={20} strokeWidth={1.5} />
     </div>
     <div>
-      <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
-      <p className="text-gray-600 text-sm">{detail}</p>
+      <h4 className="text-xs font-black uppercase tracking-widest text-[#7A1909] mb-1">{title}</h4>
+      <p className="text-slate-600 font-light text-sm">{detail}</p>
     </div>
   </a>
 );
 
 // --- Main Component ---
 const Contact: React.FC = () => {
-  // Public env var (exposed to client at build time)
   const accessKey = process.env.NEXT_PUBLIC_FORM_ACCESS_KEY;
 
   const [formData, setFormData] = useState<FormState>({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
+    name: '', email: '', phone: '', message: '',
   });
 
-    // State for form submission status, typed with IStatus
   const [status, setStatus] = useState<IStatus>({
-    loading: false,
-    error: null,
-    success: false,
+    loading: false, error: null, success: false,
   });
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-async function handleSubmit(event: FormEvent) {
-  event.preventDefault();
-  setStatus({ loading: true, error: null, success: false });
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    setStatus({ loading: true, error: null, success: false });
 
-  try {
-    if (!accessKey) {
-      setStatus({ loading: false, error: 'Missing form access key. Ensure NEXT_PUBLIC_FORM_ACCESS_KEY is set.', success: false });
-      return;
-    }
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify({
-        access_key: accessKey,
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        message: formData.message,
-        from_name: "Tetelestai Contact Form",
-      })
-    });
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      setStatus({ loading: false, error: null, success: true });
-      // Reset form after successful submission
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: '',
+    try {
+      if (!accessKey) {
+        setStatus({ loading: false, error: 'Configuration Error.', success: false });
+        return;
+      }
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: accessKey,
+          ...formData,
+          from_name: "Tetelestai Contact Form",
+        })
       });
-    } else {
-      setStatus({ loading: false, error: result.message || 'Failed to send message', success: false });
+      
+      const result = await response.json();
+      if (result.success) {
+        setStatus({ loading: false, error: null, success: true });
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        setTimeout(() => setStatus(s => ({ ...s, success: false })), 5000);
+      } else {
+        setStatus({ loading: false, error: result.message || 'Failed to send.', success: false });
+      }
+    } catch (error) {
+      setStatus({ loading: false, error: 'Network error.', success: false });
     }
-  } catch (error: unknown) { // Explicitly type error as unknown
-    let errorMessage = 'Network error. Please try again.';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    setStatus({ loading: false, error: errorMessage, success: false });
   }
-}
 
   return (
-    <section id="contact" className="py-24 px-6 bg-white">
-      <div className="container mx-auto max-w-6xl">
+    <section id="contact" className="py-24 px-6 bg-white overflow-hidden">
+      <div className="container mx-auto max-w-7xl">
 
         {/* Section Heading */}
-        <div className="mb-16">
-          <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest text-center mb-2">
+        <div className="mb-20 text-center">
+          <span className="inline-block px-4 py-1 text-[10px] font-black tracking-[0.4em] text-[#7A1909] uppercase border border-[#7A1909]/20 rounded-full mb-6">
             Get in Touch
-          </p>
-          <h2 className="text-4xl font-extrabold text-gray-900 text-center">
-            Connect With Our Mission
+          </span>
+          <h2 className="text-4xl md:text-5xl font-light text-[#0C2B85]">
+            Connect With Our <span className="font-semibold italic">Mission.</span>
           </h2>
         </div>
 
-        {/* Contact Layout: Form on Left, Info on Right */}
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
 
-          {/* Contact Form (Takes up 2/3 of the width on large screens) */}
-          <div className="lg:col-span-2 bg-blue-50 p-8 sm:p-10 rounded-2xl shadow-xl">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h3>
+          {/* Contact Form */}
+          <div className="lg:col-span-7">
+            <div className="bg-slate-50/50 p-8 md:p-12 rounded-[2.5rem] border border-slate-100">
+              <h3 className="text-2xl font-bold text-[#0C2B85] mb-8">Send a Message</h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid sm:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+                    <input
+                      type="text" name="name" value={formData.name} onChange={handleChange} required
+                      className="w-full p-4 bg-white border border-slate-200 rounded-xl focus:border-[#0C2B85] focus:ring-0 transition-all outline-none font-light placeholder:text-slate-300"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Phone Number</label>
+                    <input
+                      type="tel" name="phone" value={formData.phone} onChange={handleChange} required
+                      className="w-full p-4 bg-white border border-slate-200 rounded-xl focus:border-[#0C2B85] focus:ring-0 transition-all outline-none font-light placeholder:text-slate-300"
+                      placeholder="+251..."
+                    />
+                  </div>
+                </div>
 
-                {/* Name */}
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none"
-                />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                  <input
+                    type="email" name="email" value={formData.email} onChange={handleChange} required
+                    className="w-full p-4 bg-white border border-slate-200 rounded-xl focus:border-[#0C2B85] focus:ring-0 transition-all outline-none font-light placeholder:text-slate-300"
+                    placeholder="example@gmail.com"
+                  />
+                </div>
 
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Your Message</label>
+                  <textarea
+                    name="message" rows={5} value={formData.message} onChange={handleChange} required
+                    className="w-full p-4 bg-white border border-slate-200 rounded-xl focus:border-[#0C2B85] focus:ring-0 transition-all outline-none font-light placeholder:text-slate-300 resize-none"
+                    placeholder="How can we help?"
+                  ></textarea>
+                </div>
 
-                {/* Phone Number */}
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder="Your Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none"
-                />
-              </div>
-
-              <div className="grid sm:grid-cols-1 gap-6">
-                {/* Email */}
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none"
-                />
-
-              </div>
-
-              {/* Message */}
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                rows={5}
-                value={formData.message}
-                onChange={handleChange}
-                required
-                className="w-full p-4 border border-gray-300 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition duration-150 outline-none resize-none"
-              ></textarea>
-
-              {/* Submit Button */}
-
-              <button
-                type="submit"
-                disabled={status.loading}
-                className="group w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg flex items-center justify-center space-x-2 transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:hover:scale-100"
+                <button
+                  type="submit"
+                  disabled={status.loading}
+                  className="group w-full md:w-auto px-10 py-4 bg-[#0C2B85] text-white font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-3 hover:bg-[#061a52] disabled:opacity-70"
                 >
-                {status.loading ? 'Sending...' : 'Send Message'}
-              </button>
-            
-              {/* Status Messages */}
-              <div className="mt-4 text-center">
-                  {status.success && <p className="text-green-600">Thank you, I will contact you soon!</p>}
-                  {status.error && <p className="text-red-600">{status.error}</p>}
-              </div>      
-            </form>
+                  {status.loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={18} />}
+                  <span>{status.loading ? 'Sending...' : 'Send Message'}</span>
+                </button>
+
+                <AnimatePresence>
+                  {status.success && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-600 text-sm font-medium">
+                      Message sent successfully. We will be in touch soon.
+                    </motion.p>
+                  )}
+                  {status.error && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[#7A1909] text-sm font-medium">
+                      {status.error}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </form>
+            </div>
           </div>
 
-          {/* Contact Information (Takes up 1/3 of the width) */}
-          <div className="lg:col-span-1 space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Details</h3>
-            {contactInfo.map((item, index) => (
-              <ContactCard key={index} {...item} />
-            ))}
+          {/* Info Column */}
+          <div className="lg:col-span-5 space-y-8">
+            <div>
+              <h3 className="text-2xl font-bold text-[#0C2B85] mb-2">Our Details</h3>
+              <p className="text-slate-400 font-light mb-8 italic text-sm">Feel free to reach out via any of these channels.</p>
+              <div className="space-y-4">
+                {contactInfo.map((item, index) => (
+                  <ContactCard key={index} {...item} />
+                ))}
+              </div>
+            </div>
+
+            {/* Subtle Brand Accent Card */}
+            <div className="p-8 bg-[#0C2B85] rounded-[2rem] text-white relative overflow-hidden group">
+               <div className="absolute -right-4 -bottom-4 text-white opacity-5 transform group-hover:scale-110 transition-transform duration-700">
+                  <Mail size={160} />
+               </div>
+               <h4 className="text-lg font-bold mb-2">Join the Community</h4>
+               <p className="text-blue-100 font-light text-sm leading-relaxed mb-6">
+                 Stay updated on our global missions and local community impact. 
+               </p>
+               <div className="w-12 h-1 bg-[#7A1909] rounded-full" />
+            </div>
           </div>
 
         </div>

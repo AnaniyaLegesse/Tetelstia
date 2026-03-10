@@ -1,67 +1,122 @@
 'use client';
 
-import { Eye, Target, Maximize } from 'lucide-react'
-import React from 'react'
-import { IconType } from 'react-icons';
+import { Eye, Target, Maximize } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const Vision = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
   interface VMPCardProps {
-  icon: IconType;
-  title: string;
-  description: string;
-}
-  // Define a single reusable card component for clarity and consistency
+    icon: any;
+    title: string;
+    description: string;
+  }
+
   const VMPCard = ({ icon: Icon, title, description }: VMPCardProps) => (
-    <div className="text-center p-8 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] border-t-4 border-blue-600">
-      <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-        <Icon size={32} className="text-white" />
+    <motion.div 
+      // variants={cardVariants}
+      whileHover={{ y: -12 }}
+      className="group relative p-10 bg-white rounded-[2rem] shadow-sm border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-[#0C2B85]/10"
+    >
+      {/* Ghost Icon background using your Deep Red */}
+      <div className="absolute top-0 right-0 p-4 text-[#7A1909] opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+        <Icon size={120} />
       </div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-4">{title}</h3>
-      <p className="text-lg text-gray-700 leading-relaxed">{description}</p>
-    </div>
+
+      {/* Modern Icon Stack using both Brand Colors */}
+      <div className="relative w-16 h-16 mb-8">
+        {/* Background layer: Brand Red */}
+        <div className="absolute inset-0 bg-[#7A1909] rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-300" />
+        {/* Top layer: Brand Navy */}
+        <div className="absolute inset-0 bg-[#0C2B85] rounded-2xl flex items-center justify-center shadow-lg group-hover:-translate-y-1 group-hover:-translate-x-1 transition-transform duration-300">
+          <Icon size={30} className="text-white" />
+        </div>
+      </div>
+
+      <h3 className="text-2xl font-bold text-[#0C2B85] mb-4 tracking-tight">
+        {title}
+      </h3>
+      
+      <p className="text-slate-600 leading-relaxed font-light">
+        {description}
+      </p>
+
+      {/* Decorative Brand Underline */}
+      <div className="mt-8 flex gap-1">
+        <div className="h-1.5 w-8 bg-[#7A1909] rounded-full group-hover:w-16 transition-all duration-500" />
+        <div className="h-1.5 w-2 bg-[#0C2B85] rounded-full group-hover:w-24 transition-all duration-500" />
+      </div>
+    </motion.div>
   );
 
   return (
-    <section id="vision" className="py-24 px-6 bg-blue-50">
-      <div className="container mx-auto max-w-6xl">
+    <section id="vision" className="py-24 px-6 bg-[#FCFDFF] overflow-hidden">
+      <div className="container mx-auto max-w-7xl">
         
-        {/* Section Heading aligned with About section */}
-        <div className="mb-16">
-          <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest text-center mb-2">
-            Our Core Identity
-          </p>
-          <h2 className="text-4xl font-extrabold text-gray-900 text-center">
-            Vision, Mission & Purpose
-          </h2>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
 
-        <div className="grid md:grid-cols-3 gap-8">
+          <div className="relative">
+              {/* Badge using Brand Red */}
+              <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-[0.3em] text-[#7A1909] uppercase bg-[#7A1909]/5 rounded-full border border-[#7A1909]/10">
+                Our Core Identity
+              </span>
+              <h2 className="text-4xl md:text-6xl font-light text-[#0C2B85] leading-[1.1] mb-6">
+                Vision, Mission &  <span className="font-semibold italic">Purpose.</span>
+              </h2>
+            </div>
+         
           
-          {/* Vision Card */}
+          <div className="flex justify-center gap-2 mt-6">
+             <div className="w-16 h-1 bg-[#0C2B85] rounded-full" />
+             <div className="w-4 h-1 bg-[#7A1909] rounded-full" />
+          </div>
+        </motion.div>
+
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-3 gap-8 lg:gap-10"
+        >
           <VMPCard
             icon={Eye}
             title="Our Vision"
             description="To see God's community transformed globally by a sustainable, multiplying movement of renewed disciples."
           />
 
-          {/* Mission Card */}
           <VMPCard
             icon={Target}
             title="Our Mission"
             description="To make renewed disciples who live out the Gospel, multiply disciples, and serve their communities holistically."
           />
           
-          {/* Purpose Card - Using Maximize icon for growth/holistic impact */}
           <VMPCard
             icon={Maximize} 
             title="Our Purpose"
             description="To foster spiritual growth and community development, ensuring holistic, long-term impact on people and environments."
           />
-
-        </div>
+        </motion.div>
       </div>
     </section>
-  )
-}
+  );
+};
 
 export default Vision;

@@ -47,10 +47,6 @@ export default function Home() {
       {/* Ministries Section */}
       <Ministries />
 
-
-      {/* CTA Section */}
-      <Cta />
-
       {/* Contact Section */}
       <Contact />
 

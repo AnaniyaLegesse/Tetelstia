@@ -1,163 +1,157 @@
 'use client';
 
-import { ArrowRight, Book, Church, Cross, Heart, Users, ChevronDown, LucideIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import { ArrowRight, Book, Church, Cross, Heart, Users, ChevronRight, LucideIcon } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
-/**
- * Type Definition for a single Core Value object.
- * icon is typed as LucideIcon to ensure it's a valid component from lucide-react.
- */
-interface CoreValue {
-  icon: LucideIcon;
-  title: string;
-  verse: string;
-  description: string;
-}
-
-/**
- * Data for Core Values
- */
-const coreValuesData: CoreValue[] = [
-  { icon: Book,
-    title: 'Supremacy of the Word',
-    verse: '[John 1:3] "Through Him all things were made; without Him nothing was made that has been made."  ',
-    description: 'The Word of God is our compass, our guide, and our source of life. It defines who we are, shapes what we say, and transforms how we think. As God’s family, we are who we are through His Word, and we build our lives on its unchanging truth.'
-   },
-  { icon: Heart,
-    title: 'Love is Our Foundation',
-    verse: '[Ephesians 4:15] "Instead, speaking the truth in love, we will grow to become in every respect the mature body of Him who is the head, that is, Christ."',
-    description: 'Love is the heartbeat of everything we do. As Christ loved us, we love others—serving with compassion, speaking truth with grace, and building communities rooted in His love.' 
-  },
-  { icon: Users,
-    title: 'Partners in God’s Purpose/co-workers with God', 
-    verse: '[2 Corinthians 5:20] "We are therefore Christ’s ambassadors, as though God were making His appeal through us."', 
-    description: 'We are co-workers with God, called to fulfill His purpose and reveal His mystery to the world. Together, we advance His Kingdom by living out His mission with passion and unity.' 
-  },
-  { icon: Cross, 
-    title: 'New Creation in Christ', 
-    verse: '[2 Corinthians 5:17] "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!" ', 
-    description: 'In Christ, we are made new. We know everyone through Christ.' 
-  },
-  { icon: Church, 
-    title: 'Holy Spirit Empowerment', 
-    verse: '[Acts 1:8] "But you will receive power when the Holy Spirit comes on you; and you will be my witnesses..."', 
-    description: 'We are witnesses for Jesus, called to share His love and truth with the world. Yet, it is the Holy Spirit who transforms lives, renews hearts, and brings lasting change. We are vessels through which He works, but all glory belongs to Him. He is the one who opens hearts, changes lives, and brings about true renewal.'
-   },
-  { icon: ArrowRight, 
-    title: 'The Gospel Mandate: Renewed Disciples Making Renewed Disciples', 
-    verse: '[Matthew 28:19] "Therefore go and make disciples of all nations..."', 
-    description: 'Being renewed disciples and making renewed disciples is the lifelong mandate Jesus has given us. We are called to live out the Gospel daily, multiplying disciples and reason for transformation in every community.'
-   },
-  { icon: Users, 
-    title: 'Together in purpose/ partners', 
-    verse: '[Psalm 133:1] "How good and pleasant it is when God’s people live together in unity!"', 
-    description: 'We believe in the power of unity and collaboration. By working together, we strengthen one another, share the grace of God, and amplify our impact for His Kingdom. '
-   }
+const coreValuesData = [
+  { icon: Book, title: 'Word', fullTitle: 'Supremacy of the Word', verse: '[John 1:3]', description: 'The Word of God is our compass and source of life. It defines who we are, shapes our speech, and transforms our thinking through unchanging truth.' },
+  { icon: Heart, title: 'Love', fullTitle: 'Love is Our Foundation', verse: '[Ephesians 4:15]', description: 'Love is the heartbeat of our service. As Christ loved us, we serve with compassion and build communities rooted in His grace.' },
+  { icon: Users, title: 'Purpose', fullTitle: 'Partners in Purpose', verse: '[2 Corinthians 5:20]', description: 'We are co-workers with God, called as ambassadors to reveal His mystery and advance His Kingdom with passion and unity.' },
+  { icon: Cross, title: 'Creation', fullTitle: 'New Creation in Christ', verse: '[2 Corinthians 5:17]', description: 'In Christ, we are made new. we see everyone through the lens of redemption and the promise of a fresh start.' },
+  { icon: Church, title: 'Spirit', fullTitle: 'Holy Spirit Empowerment', verse: '[Acts 1:8]', description: 'The Holy Spirit transforms lives and renews hearts. We are simply the vessels; all glory belongs to Him.' },
+  { icon: ArrowRight, title: 'Mandate', fullTitle: 'The Gospel Mandate', verse: '[Matthew 28:19]', description: 'Making renewed disciples is our lifelong mandate. We live the Gospel daily to bring transformation to every community.' },
+  { icon: Users, title: 'Unity', fullTitle: 'Together in Unity', verse: '[Psalm 133:1]', description: 'We believe in the power of collaboration. By working together, we amplify our impact and share the grace of God more effectively.' }
 ];
 
-/**
- * Props Definition for AccordionItem Component
- */
-interface AccordionItemProps {
-    value: CoreValue;
-    isOpen: boolean;
-    toggleAccordion: () => void;
-}
+const CoreValues = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-/**
- * Reusable Accordion Item Component
- */
-const AccordionItem: React.FC<AccordionItemProps> = ({ value, isOpen, toggleAccordion }) => {
-  // Use object destructuring for the icon property
-  const { icon: Icon } = value; 
-
-  return (
-    <div className="border border-gray-200 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-      
-      {/* Accordion Header/Button */}
-      <button 
-        className={`w-full flex items-center justify-between p-6 transition-all duration-300 ${isOpen ? 'bg-blue-600/10' : 'bg-white hover:bg-gray-50'}`}
-        onClick={toggleAccordion}
-      >
-        <div className="flex items-center space-x-4 text-left">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${isOpen ? 'bg-blue-600' : 'bg-blue-100'}`}>
-            <Icon size={20} className={`${isOpen ? 'text-white' : 'text-blue-600'}`} />
-          </div>
-          <div>
-            <h3 className={`text-xl font-bold transition-colors duration-300 ${isOpen ? 'text-blue-800' : 'text-gray-900'}`}>
-              {value.title}
-            </h3>
-          </div>
-        </div>
-        
-        <ChevronDown 
-          size={24} 
-          className={`text-blue-600 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : ''}`} 
-        />
-      </button>
-
-      {/* Accordion Content */}
-      <div 
-        className={`grid transition-all duration-500 ease-in-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-      >
-        <div className="overflow-hidden">
-          <div className="p-6 pt-0 space-y-3">
-            <p className="text-gray-700 text-base leading-relaxed border-b pb-3 border-gray-100">
-              {value.description}
-            </p>
-            <div className="text-sm font-semibold text-blue-600 flex items-center space-x-2">
-              <Book size={16} className="text-blue-600" />
-              <span>Scriptural Anchor: {value.verse}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
-/**
- * Core Values Section Component (Main)
- */
-const CoreValues: React.FC = () => {
-  // State to track the index of the currently active (open) accordion item
-  const [activeIndex, setActiveIndex] = useState<number | null>(0); // activeIndex is number or null
-
-  const toggleAccordion = (index: number) => {
-    // If the clicked item is already open, close it (set null), otherwise open the new one
-    setActiveIndex(activeIndex === index ? null : index);
-  };
+  // Auto-scroll the mobile tab bar to keep active item in view
+  useEffect(() => {
+    if (scrollRef.current) {
+      const activeTab = scrollRef.current.children[activeIndex] as HTMLElement;
+      if (activeTab) {
+        scrollRef.current.scrollTo({
+          left: activeTab.offsetLeft - 20,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [activeIndex]);
 
   return (
-    <section id="values" className="py-24 px-6 bg-white">
-      <div className="container mx-auto max-w-6xl">
+    <section id="values" className="py-16 md:py-24 px-6 bg-white overflow-hidden">
+      <div className="container mx-auto max-w-7xl">
         
-        {/* Section Heading aligned with About/Vision sections */}
-        <div className="mb-16">
-          <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest text-center mb-2">
-            What Guides Us
-          </p>
-          <h2 className="text-4xl font-extrabold text-gray-900 text-center">
-            Our Foundational Core Values
+        {/* Header */}
+        <div className="mb-12 md:mb-20">
+          <h2 className="text-[10px] font-black tracking-[0.4em] text-[#7A1909] uppercase mb-4">
+            Our Principles
           </h2>
+          <p className="text-3xl md:text-5xl font-light text-[#0C2B85] leading-tight max-w-2xl">
+            The values that <span className="font-semibold italic">anchor</span> our service.
+          </p>
         </div>
 
-        {/* Accordion List - Single Column Layout */}
-        <div className="max-w-4xl mx-auto space-y-4">
-          {coreValuesData.map((value, index) => (
-            <AccordionItem
-              key={index}
-              value={value}
-              isOpen={activeIndex === index}
-              toggleAccordion={() => toggleAccordion(index)}
-            />
-          ))}
+        {/* Mobile View: Horizontal Scrollable Tabs */}
+        <div className="lg:hidden mb-8 -mx-6 px-6 overflow-x-auto no-scrollbar flex gap-4 border-b border-slate-100" ref={scrollRef}>
+          {coreValuesData.map((value, index) => {
+            const Icon = value.icon;
+            const isActive = activeIndex === index;
+            return (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`flex-shrink-0 flex items-center gap-2 pb-4 border-b-2 transition-all duration-300 ${
+                  isActive ? 'border-[#7A1909] text-[#0C2B85]' : 'border-transparent text-slate-400'
+                }`}
+              >
+                <Icon size={16} strokeWidth={isActive ? 2 : 1.5} />
+                <span className={`text-sm whitespace-nowrap ${isActive ? 'font-bold' : 'font-light'}`}>
+                  {value.title}
+                </span>
+              </button>
+            );
+          })}
         </div>
-        
+
+        <div className="grid lg:grid-cols-12 gap-16">
+          
+          {/* Desktop View: Left Navigation List */}
+          <div className="hidden lg:block lg:col-span-5 space-y-1">
+            {coreValuesData.map((value, index) => {
+              const Icon = value.icon;
+              const isActive = activeIndex === index;
+              return (
+                <button
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className="w-full group relative flex items-center py-4 px-2 transition-all duration-300"
+                >
+                  <div className={`absolute left-0 w-0.5 transition-all duration-500 ${
+                    isActive ? 'h-full bg-[#7A1909]' : 'h-0 bg-slate-200 group-hover:h-1/2'
+                  }`} />
+                  <div className={`flex items-center gap-5 pl-6 transition-all duration-300 ${isActive ? 'translate-x-2' : 'translate-x-0'}`}>
+                    <Icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? 'text-[#0C2B85]' : 'text-slate-400 group-hover:text-slate-600'} />
+                    <span className={`text-lg transition-colors ${isActive ? 'font-bold text-[#0C2B85]' : 'font-light text-slate-500 group-hover:text-slate-800'}`}>
+                      {value.fullTitle}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right: Content Display (Unified Mobile/Desktop) */}
+          <div className="lg:col-span-7">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="relative bg-slate-50/50 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-16 border border-slate-100 min-h-[400px] flex flex-col justify-center"
+              >
+                {/* Number Watermark (Hidden on small mobile to reduce clutter) */}
+                <div className="hidden sm:block absolute -top-6 -right-6 text-slate-100/50 -z-10">
+                  <span className="text-[10rem] md:text-[12rem] font-black leading-none select-none">
+                    0{activeIndex + 1}
+                  </span>
+                </div>
+                
+                <div className="space-y-6 md:space-y-10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-[1px] bg-[#7A1909]" />
+                    <span className="text-[10px] font-bold tracking-[0.2em] text-[#7A1909] uppercase">
+                      Scriptural Anchor
+                    </span>
+                  </div>
+
+                  <blockquote className="text-xl md:text-3xl font-serif italic text-[#0C2B85] leading-relaxed">
+                    "{coreValuesData[activeIndex].verse === '[John 1:3]' 
+                      ? 'Through Him all things were made; without Him nothing was made that has been made.' 
+                      : coreValuesData[activeIndex].description.split('.')[0] + '.'}"
+                    <footer className="mt-4 md:mt-6 text-[10px] font-sans not-italic font-black text-slate-400 tracking-[0.2em] uppercase">
+                       — {coreValuesData[activeIndex].verse}
+                    </footer>
+                  </blockquote>
+
+                  <div className="pt-6 md:pt-10 border-t border-slate-200/60">
+                    {/* Show Full Title on Mobile inside the card since it's hidden in the tabs */}
+                    <h4 className="lg:hidden text-[#0C2B85] font-bold mb-2 uppercase tracking-tighter">
+                      {coreValuesData[activeIndex].fullTitle}
+                    </h4>
+                    <p className="text-base md:text-lg text-slate-500 leading-relaxed font-light">
+                      {coreValuesData[activeIndex].description}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-1.5 pt-4">
+                     <div className="w-10 h-1 bg-[#0C2B85] rounded-full" />
+                     <div className="w-2 h-1 bg-[#7A1909] rounded-full" />
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          
+        </div>
       </div>
     </section>
   )
 }
 
-export default CoreValues
+export default CoreValues;
